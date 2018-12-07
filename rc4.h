@@ -27,11 +27,7 @@ public:
         int j = 0;
         int k = 0;
 
-        //long sizeInput = strlen();
         string resultChiffrement;
-
-        /*if(sizeInput != 100)
-            cout << "Size Lecture : " << sizeInput << endl;*/
 
         int tmp;
 

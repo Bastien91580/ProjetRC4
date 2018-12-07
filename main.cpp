@@ -88,30 +88,31 @@ int main(int argc, char **argv) {
     }
 
 
-    int sizeBlockStr = 1000000000;
-    int sizeOfBlock;
-    if(file.size()%sizeBlockStr == 0){
-        sizeOfBlock = file.size()/sizeBlockStr;
+
+
+
+
+
+
+    int sizeOfOneBlock = 100;
+    int numberOfBlock;
+    if(file.size()%sizeOfOneBlock == 0){
+        numberOfBlock = file.size()/sizeOfOneBlock;
     } else {
-        sizeOfBlock = (file.size()/sizeBlockStr)+1;
+        numberOfBlock = (file.size()/sizeOfOneBlock)+1;
     }
 
-    string strInput[sizeOfBlock];
-    string result[sizeOfBlock];
+    string strInput[numberOfBlock];
+    string result[numberOfBlock];
 
 
     int position = 0;
-
-    for(int i = 0; i < sizeOfBlock; i++){
-        strInput[i] = file.substr (position,sizeBlockStr);
-        position += 5;
+    for(int i = 0; i < numberOfBlock; i++){
+        strInput[i] = file.substr (position,sizeOfOneBlock);
+        position += sizeOfOneBlock;
     }
 
-
-
-    int partition = sizeOfBlock / nbThread;
-
-    cout << sizeOfBlock << endl;
+    int partition = numberOfBlock / nbThread;
 
     int st = 0;
     int fn = st + partition;
@@ -120,16 +121,14 @@ int main(int argc, char **argv) {
     for(int j = 0; j < nbThread; j++) {
         int size;
         if(j == nbThread-1) {
-            size = (sizeBlockStr*sizeOfBlock) - file.size();
+            size = (sizeOfOneBlock*numberOfBlock) - file.size();
             cout << " Size 0 : " << size << endl;
-            size = sizeBlockStr - size;
+            size = sizeOfOneBlock - size;
             cout << " Size 1 : " << size << endl;
         } else {
-            size = sizeBlockStr;
+            size = sizeOfOneBlock;
             cout << " Size 2 : " << size << endl;
         }
-
-
 
         cout << "Thread : " << j << " Start at : " << st << " Ends at : " << fn << endl;
         thread t = thread(threadFunction, st, fn, &result[0], &strInput[0], size, last, argv[5]);
@@ -143,13 +142,10 @@ int main(int argc, char **argv) {
             fn += partition;
         } else {
             cout << " thread final " << endl;
-            fn = sizeOfBlock;
+            fn = numberOfBlock;
             last = 1;
 
         }
-
-
-
 
     }
 
@@ -158,14 +154,14 @@ int main(int argc, char **argv) {
 
     if(strcmp(argv[1], "-e") == 0) {
         ofstream outFile(fileNameOut + ".rc4");
-        for(int x = 0; x < sizeOfBlock; x ++){
+        for(int x = 0; x < numberOfBlock; x ++){
             outFile << result[x];
         }
         outFile.close();
 
     } else if(strcmp(argv[1], "-d") == 0){
         ofstream outFile(fileNameOut + ".decrypt");
-        for(int x = 0; x < sizeOfBlock; x ++){
+        for(int x = 0; x < numberOfBlock; x ++){
             outFile << result[x];
         }
         outFile.close();
